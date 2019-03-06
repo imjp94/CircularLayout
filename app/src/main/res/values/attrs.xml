@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CircularLayout">
-        <attr name="radius" format="dimension"/>
         <attr name="offset_angle" format="float"/>
     </declare-styleable>
     <declare-styleable name="CircularLayout_Layout">
