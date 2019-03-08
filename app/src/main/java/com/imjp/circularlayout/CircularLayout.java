@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class CircularLayout extends ViewGroup {
     public final static String TAG = CircularLayout.class.getSimpleName();
+    public final static float START_OFFSET_ANGLE = -90; // Offset angle to let circle start at 12 o'clock
     private final Rect rectTmp = new Rect();
     private final ArrayList<View> centerViews = new ArrayList<>();
     private final ArrayList<View> orbitViews = new ArrayList<>();
@@ -140,7 +141,11 @@ public class CircularLayout extends ViewGroup {
         if (child.getVisibility() == GONE) return;
         float radiusX = Math.min((diameter + maxCenterChildWidth) / 2.0f, maxWidth / 2.0f);
         float radiusY = Math.min((diameter + maxCenterChildHeight) / 2.0f, maxHeight / 2.0f);
-        float angle = getAngleInRadian(i) + offsetAngleInRadian();
+        float angle = (float) Math.toRadians(getAngle(i)) + (float) Math.toRadians(START_OFFSET_ANGLE);
+
+        if (((LayoutParams) child.getLayoutParams()).rotate) {
+            child.setRotation(getAngle(i));
+        }
         layoutChild(
                 child,
                 (int) Utils.xInCircle(cX, radiusX, angle),
@@ -157,16 +162,8 @@ public class CircularLayout extends ViewGroup {
         child.layout(left, top, right, bottom);
     }
 
-    public float offsetAngleInRadian() {
-        return (float) Math.toRadians(offsetAngle);
-    }
-
     public float getAngle(int i) {
-        return 360.0f * i / orbitViews.size();
-    }
-
-    public float getAngleInRadian(int i) {
-        return (float) Math.toRadians(getAngle(i));
+        return 360.0f * i / orbitViews.size() + offsetAngle;
     }
 
     private boolean hasCenter() {
@@ -195,6 +192,7 @@ public class CircularLayout extends ViewGroup {
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
         public boolean center = false;
+        public boolean rotate = false;
 
         public LayoutParams(Context context, AttributeSet attrs) {
             super(context, attrs);
@@ -212,6 +210,7 @@ public class CircularLayout extends ViewGroup {
         private void parseXmlAttrs(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircularLayout_Layout);
             center = a.getBoolean(R.styleable.CircularLayout_Layout_center, false);
+            rotate = a.getBoolean(R.styleable.CircularLayout_Layout_rotate, false);
             a.recycle();
         }
     }
