@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+/**
+ * Layout children views in circle
+ */
 public class CircularLayout extends ViewGroup {
     public final static String TAG = CircularLayout.class.getSimpleName();
     public final static float START_OFFSET_ANGLE = -90; // Offset angle to let circle start at 12 o'clock
@@ -36,10 +39,16 @@ public class CircularLayout extends ViewGroup {
         init(context, attrs);
     }
 
+    /**
+     * Initialization on constructed
+     */
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) parseXmlAttrs(context, attrs);
     }
 
+    /**
+     * Internal method to parse custom attributes on constructed
+     */
     private void parseXmlAttrs(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircularLayout);
         offsetAngle = a.getFloat(R.styleable.CircularLayout_offset_angle, 0);
@@ -80,6 +89,11 @@ public class CircularLayout extends ViewGroup {
         );
     }
 
+    /**
+     * Measure size of circle required for child view
+     * @param i Index of child
+     * @return Combined child state
+     */
     private int measureCircleSize(int i, int widthMeasureSpec, int heightMeasureSpec, int childState) {
         final View child = getChildAt(i);
         if (child.getVisibility() == GONE) return childState;
@@ -98,11 +112,21 @@ public class CircularLayout extends ViewGroup {
         return combineMeasuredStates(childState, child.getMeasuredState());
     }
 
+    /**
+     * Measure size required for child positioned at center
+     * @param width Child's width
+     * @param height Child's height
+     */
     private void measureCenterView(int width, int height) {
         maxCenterChildWidth = Math.max(maxCenterChildWidth,  width);
         maxCenterChildHeight = Math.max(maxCenterChildHeight, height);
     }
 
+    /**
+     * Measure size required for child positioned as circle
+     * @param width Child's width
+     * @param height Child's height
+     */
     private void measureOrbitView(int width, int height) {
         maxChildWidth = Math.max(maxChildWidth, width);
         maxChildHeight = Math.max(maxChildHeight, height);
@@ -126,6 +150,14 @@ public class CircularLayout extends ViewGroup {
         }
     }
 
+    /**
+     * Layout child view at center
+     * @param i Index of child from centerViews
+     * @param cX Center x
+     * @param cY Center y
+     * @param maxWidth Maximum width
+     * @param maxHeight Maximum height
+     */
     private void layoutCenterChild(int i, float cX, float cY, float maxWidth, float maxHeight) {
         View child = centerViews.get(i);
         if (child.getVisibility() == GONE) return;
@@ -136,6 +168,14 @@ public class CircularLayout extends ViewGroup {
         );
     }
 
+    /**
+     * Layout child as circle
+     * @param i Index of child from orbitViews
+     * @param cX Center x
+     * @param cY Center y
+     * @param maxWidth Maximum width
+     * @param maxHeight Maximum height
+     */
     private void layoutOrbitChild(int i, float cX, float cY, float maxWidth, float maxHeight) {
         View child = orbitViews.get(i);
         if (child.getVisibility() == GONE) return;
@@ -154,6 +194,14 @@ public class CircularLayout extends ViewGroup {
         );
     }
 
+    /**
+     * Layout child with given position as center
+     * @param child Child view to be layout
+     * @param x Position x
+     * @param y Position y
+     * @param width Child width
+     * @param height Child height
+     */
     private void layoutChild(View child, int x, int y, int width, int height) {
         int left = x - width / 2;
         int top = y - height / 2;
@@ -162,10 +210,18 @@ public class CircularLayout extends ViewGroup {
         child.layout(left, top, right, bottom);
     }
 
+    /**
+     * Get angle of child with offsetAngle taken into account
+     * @param i Index of child
+     * @return Angle of child
+     */
     public float getAngle(int i) {
         return 360.0f * i / orbitViews.size() + offsetAngle;
     }
 
+    /**
+     * Get whether this has child position at center
+     */
     private boolean hasCenter() {
         return centerViews.size() > 0;
     }
