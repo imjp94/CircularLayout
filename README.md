@@ -59,3 +59,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 
 </com.imjp.circularlayout.CircularLayout>
 ```
+
+## License
+
+[MIT License](LICENSE)
