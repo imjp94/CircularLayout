@@ -222,7 +222,7 @@ public class CircularLayout extends ViewGroup {
     /**
      * Get whether this has child position at center
      */
-    private boolean hasCenter() {
+    public boolean hasCenter() {
         return centerViews.size() > 0;
     }
 
